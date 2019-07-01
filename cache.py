@@ -69,6 +69,7 @@ def show_distributions():
             'CallerReference': str(time.time())
         })
         print("\tStatus: %s" % invalidation['Invalidation']['Status'])
+        print("\n")
     else:
         show_distributions()
 
