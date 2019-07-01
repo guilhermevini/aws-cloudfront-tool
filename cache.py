@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from __future__ import print_function
 
 import os
@@ -21,26 +23,39 @@ def get_user_choice():
     print("\t[q] Sair.")
     print("\n")
 
-    return input("\tEscolha uma opção: ")
+    return raw_input("\tEscolha uma opção: ")
 
-dists = [0]*10
 
 def show_distributions():
     display_title_bar()
+
     response = client.list_distributions()
-    list = response['DistributionList']
+    dlist = response['DistributionList']
+    
+    dists = []
     count=0
-    for dist in list['Items']:
+
+    for dist in dlist['Items']:
         id = dist['Id']
-        print("\t[%s] " % count + id)
-        dists[count]=id
+        print("\t[%s] " % count + id + " (" + dist['Status'] + ")")
+        print("\t"+ dist['DomainName'])
+
+        dists.insert(count, id)
         count +=1
-        for domain in dist['Aliases']['Items']:
-            print("\t" + domain)
+
+        if ('Items' in dist['Aliases']): 
+            for domain in dist['Aliases']['Items']:
+                print("\t" + domain)
+        else:
+            for domain in dist['Origins']['Items']:
+                print("\t" + domain['DomainName'])
         print("\n")
 
-    option = input("\tQual cache deseja limpar? ")
-    path = input("\tCaminho do arquivo ou pattern: ")
+    option = raw_input("\tQual cache deseja limpar? (ou 'q' para sair): ")
+    if option == 'q':
+        print("\n")
+        return
+    path = raw_input("\tCaminho do arquivo ou pattern: ")
 
     if len(dists) >= int(option):
         selected = dists[int(option)]
